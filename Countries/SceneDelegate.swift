@@ -10,13 +10,23 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    private let mainCoordinator = MainCoordinator()
+    private let navigationController = UINavigationController()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene), let appWindow = windowScene.windows.first else { return }
+        
+        window = appWindow
+        // Make Maincoordinator and navigation controller and assignt the navigationcontroller as rootViewController of the window.
+        appWindow.rootViewController = navigationController
+        navigationController.isNavigationBarHidden = true
+        appWindow.makeKeyAndVisible()
+        
+        // Start the main coordinator with the rootviewcontroller of the window.
+        mainCoordinator.start(navigationController: navigationController)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -45,6 +55,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        
+        // The reviews in its storage
+        ReviewUserDefaultStorage.shared.saveReviews()
     }
 
 
